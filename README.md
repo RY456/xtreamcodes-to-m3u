@@ -10,15 +10,21 @@ A powerful, user-friendly Node.js application that converts Xtream Codes API cre
 ## 🚀 Key Features
 
 *   **Xtream Codes API Support**: Connects to any IPTV provider using Xtream Codes API.
-*   **M3U Generation**: Creates standard `.m3u` playlist files compatible with VLC, Perfect Player, Tivimate, etc.
-*   **Category Management (NEW!)**:
+*   **Multiple Export Formats**:
+    *   **M3U** (Standard): Compatible with VLC, Perfect Player, Tivimate, etc.
+    *   **M3U8** (Apple/HLS): Optimized for Apple devices and HLS players.
+    *   **JSON** (API/Developer): Structured data format for API integrations and custom applications.
+*   **Category Management**:
     *   **Fetch & Select**: Retrieve categories from the server and select only what you want.
     *   **Drag & Drop Sorting**: Reorder categories simply by dragging them. The M3U will follow your custom order.
     *   **Bulk Actions**: "Select All" and "Deselect All" buttons for quick management.
+    *   **Quality Filtering**: Filter categories by quality (HD, FHD, 4K/UHD) with visual badges.
 *   **Content Filtering**: Choose to include Live TV, Movies (VOD), or both.
 *   **EPG & Catch-up**: Optional support for Electronic Program Guide (EPG) and Catch-up (TV Archive).
+*   **Credential Management**: Save your credentials locally for quick access (browser localStorage).
 *   **Modern UI**: Responsive, dark-themed interface built with Bootstrap 5 and custom CSS.
 *   **Multi-Language**: Supports English (EN), Turkish (TR), German (DE), and French (FR).
+*   **Docker Support**: Easy deployment with Docker and docker-compose.
 *   **Privacy Focused**: No data is stored on the server. Credentials are passed directly to the IPTV provider.
 
 ## �️ Installation
@@ -63,10 +69,13 @@ A powerful, user-friendly Node.js application that converts Xtream Codes API cre
     *   **Select**: Check the boxes for the categories you want to keep.
     *   **Sort**: Drag and drop category items to change their order in the playlist.
     *   **Filter**: Use the "Select All" / "Deselect All" buttons or the search bar.
+    *   **Quality Filter**: Filter categories by quality (All, HD, FHD, 4K/UHD).
     *   **Settings**: Enable EPG, Catch-up, or adjust the number of days to include.
+    *   **Export Format**: Choose between M3U, M3U8, or JSON format.
+    *   **Remember Credentials**: Check "Remember credentials" to save your settings for next time.
 
 4.  **Download**:
-    *   Click **"Create M3U"** to download your customized `playlist.m3u` file.
+    *   Click **"Download M3U"** to download your customized playlist file.
 
 ## ⚙️ Configuration
 

@@ -50,7 +50,12 @@ const languages = {
         toast_download_start: 'M3U dosyanız inmeye başladı!',
         no_live_cats: 'Canlı yayın kategorisi bulunamadı.',
         no_vod_cats: 'Film kategorisi bulunamadı.',
-        preparing_btn: 'Hazırlanıyor...'
+        preparing_btn: 'Hazırlanıyor...',
+        export_format_label: 'Dışa Aktarma Formatı',
+        format_m3u: 'M3U (Standart)',
+        format_m3u8: 'M3U8 (Apple/HLS)',
+        format_json: 'JSON (API/Geliştirici)',
+        remember_credentials: 'Bilgileri Hatırla'
     },
     en: {
         title: 'Xtream Codes M3U Converter',
@@ -96,7 +101,12 @@ const languages = {
         toast_download_start: 'Your M3U download has started!',
         no_live_cats: 'No live categories found.',
         no_vod_cats: 'No VOD categories found.',
-        preparing_btn: 'Preparing...'
+        preparing_btn: 'Preparing...',
+        export_format_label: 'Export Format',
+        format_m3u: 'M3U (Standard)',
+        format_m3u8: 'M3U8 (Apple/HLS)',
+        format_json: 'JSON (API/Developer)',
+        remember_credentials: 'Remember credentials'
     },
     de: {
         title: 'Xtream Codes M3U Konverter',
@@ -142,7 +152,12 @@ const languages = {
         toast_download_start: 'Ihr M3U-Download hat begonnen!',
         no_live_cats: 'Keine Live-Kategorien gefunden.',
         no_vod_cats: 'Keine VOD-Kategorien gefunden.',
-        preparing_btn: 'Vorbereiten...'
+        preparing_btn: 'Vorbereiten...',
+        export_format_label: 'Exportformat',
+        format_m3u: 'M3U (Standard)',
+        format_m3u8: 'M3U8 (Apple/HLS)',
+        format_json: 'JSON (API/Entwickler)',
+        remember_credentials: 'Anmeldedaten merken'
     },
     fr: {
         title: 'Convertisseur Xtream Codes M3U',
@@ -188,7 +203,12 @@ const languages = {
         toast_download_start: 'Le téléchargement de votre M3U a commencé!',
         no_live_cats: 'Aucune catégorie en direct trouvée.',
         no_vod_cats: 'Aucune catégorie VOD trouvée.',
-        preparing_btn: 'Préparation...'
+        preparing_btn: 'Préparation...',
+        export_format_label: 'Format d\'exportation',
+        format_m3u: 'M3U (Standard)',
+        format_m3u8: 'M3U8 (Apple/HLS)',
+        format_json: 'JSON (API/Développeur)',
+        remember_credentials: 'Se souvenir des identifiants'
     }
 };
 
@@ -251,6 +271,79 @@ async function curlRequest(url, lang) {
 // --- M3U Escape Fonksiyonu ---
 function escapeM3UValue(value) {
     return typeof value === 'string' ? value.replace(/"/g, '\\"') : '';
+}
+
+// --- M3U to JSON Converter ---
+function convertM3uToJson(m3uContent, username) {
+    const lines = m3uContent.split('\n').filter(line => line.trim());
+    const channels = [];
+    let epgUrl = '';
+    let tvgShift = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+
+        // EPG URL'sini yakala
+        if (line.includes('url-tvg=')) {
+            const match = line.match(/url-tvg="([^"]+)"/);
+            if (match) epgUrl = match[1];
+        }
+
+        // TVG shift'i yakala
+        if (line.includes('tvg-shift=')) {
+            const match = line.match(/tvg-shift="([^"]+)"/);
+            if (match) tvgShift = parseInt(match[1], 10) || 0;
+        }
+
+        // EXTINF satırlarını parse et
+        if (line.startsWith('#EXTINF:')) {
+            const channel = {};
+
+            // Attributes'ları parse et
+            const tvgIdMatch = line.match(/tvg-id="([^"]*)"/);
+            const tvgNameMatch = line.match(/tvg-name="([^"]*)"/);
+            const tvgLogoMatch = line.match(/tvg-logo="([^"]*)"/);
+            const groupTitleMatch = line.match(/group-title="([^"]*)"/);
+            const catchupMatch = line.match(/catchup="([^"]*)"/);
+            const catchupDaysMatch = line.match(/catchup-days="([^"]*)"/);
+            const tvgShiftMatch = line.match(/tvg-shift="([^"]*)"/);
+
+            // Kanal adını al (virgülden sonraki kısım)
+            const nameMatch = line.match(/,(.+)$/);
+
+            channel.name = nameMatch ? nameMatch[1].trim() : '';
+            channel.tvg_id = tvgIdMatch ? tvgIdMatch[1] : '';
+            channel.tvg_name = tvgNameMatch ? tvgNameMatch[1] : '';
+            channel.tvg_logo = tvgLogoMatch ? tvgLogoMatch[1] : '';
+            channel.group_title = groupTitleMatch ? groupTitleMatch[1] : '';
+
+            if (catchupMatch) {
+                channel.catchup = catchupMatch[1];
+                if (catchupDaysMatch) channel.catchup_days = parseInt(catchupDaysMatch[1], 10);
+            }
+
+            if (tvgShiftMatch) {
+                channel.tvg_shift = parseInt(tvgShiftMatch[1], 10);
+            }
+
+            // URL'yi al (bir sonraki satır)
+            if (i + 1 < lines.length && !lines[i + 1].startsWith('#')) {
+                channel.url = lines[i + 1].trim();
+                i++; // URL satırını atla
+            }
+
+            channels.push(channel);
+        }
+    }
+
+    return {
+        username: username,
+        generated_at: new Date().toISOString(),
+        epg_url: epgUrl,
+        tvg_shift: tvgShift,
+        total_channels: channels.length,
+        channels: channels
+    };
 }
 
 // --- M3U Oluşturma ---
@@ -557,9 +650,10 @@ app.get('/', (req, res) => {
 
 app.post('/', async (req, res) => {
     const lang = languages[req.currentLang];
-    const { url, username, password, content_type, days_to_include, epg_timeshift } = req.body;
+    const { url, username, password, content_type, days_to_include, epg_timeshift, export_format } = req.body;
     const epg_enabled = req.body.epg_enabled === 'on';
     const catchup_enabled = req.body.catchup_enabled === 'on';
+    const format = export_format || 'm3u';
 
     const formData = req.body;
 
@@ -625,18 +719,35 @@ app.post('/', async (req, res) => {
             formData
         });
     } else {
-        // Dosya adını oluştur (kullanıcı adı ile)
-        const filename = `playlist_${username}.m3u`;
+        // Format'a göre export
+        if (format === 'json') {
+            // JSON formatında export
+            const jsonData = convertM3uToJson(m3u, username);
+            const filename = `playlist_${username}.json`;
 
-        // Header'ları doğru şekilde ayarla
-        res.set({
-            'Content-Type': 'audio/x-mpegurl; charset=utf-8',
-            'Content-Disposition': `attachment; filename="${filename}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-        });
-        res.send(m3u);
+            res.set({
+                'Content-Type': 'application/json; charset=utf-8',
+                'Content-Disposition': `attachment; filename="${filename}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            });
+            res.json(jsonData);
+        } else {
+            // M3U veya M3U8 formatında export
+            const extension = format === 'm3u8' ? 'm3u8' : 'm3u';
+            const filename = `playlist_${username}.${extension}`;
+            const contentType = format === 'm3u8' ? 'application/vnd.apple.mpegurl; charset=utf-8' : 'audio/x-mpegurl; charset=utf-8';
+
+            res.set({
+                'Content-Type': contentType,
+                'Content-Disposition': `attachment; filename="${filename}"; filename*=UTF-8''${encodeURIComponent(filename)}`,
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            });
+            res.send(m3u);
+        }
     }
 });
 

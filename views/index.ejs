@@ -308,6 +308,13 @@
                                 <input type="password" class="form-control" name="password" id="password" required>
                             </div>
 
+                            <div class="form-check mb-3">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">
+                                    <%= lang.remember_credentials %>
+                                </label>
+                            </div>
+
                             <div class="mb-3">
                                 <label for="content_type" class="form-label">
                                     <%= lang.content_type_label %>
@@ -322,6 +329,17 @@
                                     <option value="vod" <%=(locals.formData && formData.content_type=='vod' )
                                         ? 'selected' : '' %>><%= lang.content_movies %>
                                     </option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="export_format" class="form-label">
+                                    <%= lang.export_format_label %>
+                                </label>
+                                <select class="form-select" name="export_format" id="export_format">
+                                    <option value="m3u" selected><%= lang.format_m3u %></option>
+                                    <option value="m3u8"><%= lang.format_m3u8 %></option>
+                                    <option value="json"><%= lang.format_json %></option>
                                 </select>
                             </div>
 
@@ -474,6 +492,98 @@
         const selectAllBtn = document.getElementById('selectAllBtn');
         const deselectAllBtn = document.getElementById('deselectAllBtn');
 
+        // localStorage yönetimi
+        const STORAGE_KEY = 'xtream_credentials';
+
+        function saveCredentials() {
+            const rememberMe = document.getElementById('rememberMe').checked;
+            if (rememberMe) {
+                const credentials = {
+                    url: document.getElementById('url').value,
+                    username: document.getElementById('username').value,
+                    content_type: document.getElementById('content_type').value,
+                    export_format: document.getElementById('export_format').value
+                };
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials));
+            } else {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        }
+
+        function loadCredentials() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const credentials = JSON.parse(saved);
+                    document.getElementById('url').value = credentials.url || '';
+                    document.getElementById('username').value = credentials.username || '';
+                    document.getElementById('content_type').value = credentials.content_type || 'all';
+                    document.getElementById('export_format').value = credentials.export_format || 'm3u';
+                    document.getElementById('rememberMe').checked = true;
+                } catch (e) {
+                    console.error('Error loading credentials:', e);
+                }
+            }
+        }
+
+        // Sayfa yüklendiğinde credential'ları yükle
+        window.addEventListener('DOMContentLoaded', function() {
+            loadCredentials();
+
+            // Eğer kategori seçim ekranındaysa, kategorileri yükle
+            const savedScreen = sessionStorage.getItem('xtream_screen');
+            if (savedScreen === 'categories') {
+                const savedCategories = sessionStorage.getItem('xtream_categories');
+                if (savedCategories) {
+                    try {
+                        categoriesData = JSON.parse(savedCategories);
+                        renderCategories(categoriesData);
+                        credentialsSection.style.display = 'none';
+                        categorySection.style.display = 'block';
+                        sessionStorage.removeItem('xtream_screen');
+                        sessionStorage.removeItem('xtream_categories');
+                    } catch (e) {
+                        console.error('Error loading categories:', e);
+                    }
+                }
+            }
+        });
+
+        // Dil değiştirildiğinde bilgileri kaydet
+        const languageForm = document.querySelector('.language-select');
+        if (languageForm) {
+            languageForm.addEventListener('submit', function(e) {
+                // Dil değiştirilmeden önce bilgileri her zaman kaydet
+                const url = document.getElementById('url').value;
+                const username = document.getElementById('username').value;
+                const content_type = document.getElementById('content_type').value;
+                const export_format = document.getElementById('export_format').value;
+
+                if (url || username) {
+                    const credentials = {
+                        url: url,
+                        username: username,
+                        content_type: content_type,
+                        export_format: export_format
+                    };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials));
+
+                    // Checkbox durumunu da kaydet
+                    const rememberMe = document.getElementById('rememberMe');
+                    if (rememberMe) {
+                        credentials.rememberMe = rememberMe.checked;
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials));
+                    }
+                }
+
+                // Eğer kategori seçim ekranındaysa, kategorileri de kaydet
+                if (categorySection.style.display === 'block') {
+                    sessionStorage.setItem('xtream_categories', JSON.stringify(categoriesData));
+                    sessionStorage.setItem('xtream_screen', 'categories');
+                }
+            });
+        }
+
         // Dil çevirileri (JS tarafı için)
         const translations = {
             fetchError: "<%= lang.toast_error_fetch %>",
@@ -505,6 +615,9 @@
                 showToast("<%= lang.error_missing_field %>", "bg-danger");
                 return;
             }
+
+            // Credential'ları kaydet
+            saveCredentials();
 
             loading.style.display = 'inline-block';
             fetchBtn.disabled = true;

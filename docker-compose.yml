@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  xtreamcodes-converter:
+    build: .
+    container_name: xtreamcodes-m3u-converter
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    volumes:
+      # Mount for development (optional - comment out for production)
+      - ./views:/app/views:ro
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
