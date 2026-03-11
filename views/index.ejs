@@ -1,249 +1,637 @@
 <!DOCTYPE html>
-<html lang="<%= currentLang %>">
+<html lang="<%= currentLang %>" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= lang.title %>
-    </title>
+    <title><%= lang.title %></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
+        /* ===== CSS VARIABLES (THEME SYSTEM) ===== */
+        :root,
+        [data-theme="light"] {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --secondary-gradient: linear-gradient(135deg, #FF9966 0%, #FF5E62 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --shadow-color: rgba(102, 126, 234, 0.25);
+            --success-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            --card-bg: rgba(255, 255, 255, 0.97);
+            --card-shadow: 0 25px 60px -12px rgba(102, 126, 234, 0.22);
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --input-bg: #ffffff;
+            --input-border: #e2e8f0;
+            --section-bg: #f8fafc;
+            --item-bg: #ffffff;
+            --item-border: #eef2f7;
+            --item-hover-border: #667eea;
+            --tab-bg: transparent;
+            --tab-active-color: #667eea;
+            --scrollbar-track: #f1f5f9;
+            --scrollbar-thumb: #cbd5e1;
+            --divider-color: #e2e8f0;
+            --badge-bg: #e0e7ff;
+            --badge-color: #4338ca;
+            --alert-info-bg: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            --alert-info-color: #4338ca;
+            --alert-danger-bg: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            --alert-danger-color: #dc2626;
+            --btn-secondary-bg: #ffffff;
+            --btn-secondary-color: #4b5563;
+            --btn-secondary-border: #e5e7eb;
+            --btn-secondary-hover-bg: #f3f4f6;
+            --account-card-bg: #f0f7ff;
+            --account-card-border: #bfdbfe;
+            --nav-tabs-border: #dee2e6;
+            --modal-overlay: rgba(0,0,0,0.1);
         }
+
+        [data-theme="dark"] {
+            --primary-gradient: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+            --secondary-gradient: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+            --success-gradient: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+            --card-bg: #1e293b;
+            --card-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.5);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: #334155;
+            --input-bg: #0f172a;
+            --input-border: #334155;
+            --section-bg: #0f172a;
+            --item-bg: #1e293b;
+            --item-border: #334155;
+            --item-hover-border: #818cf8;
+            --tab-bg: transparent;
+            --tab-active-color: #818cf8;
+            --scrollbar-track: #1e293b;
+            --scrollbar-thumb: #475569;
+            --divider-color: #334155;
+            --badge-bg: #312e81;
+            --badge-color: #a5b4fc;
+            --alert-info-bg: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            --alert-info-color: #a5b4fc;
+            --alert-danger-bg: linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%);
+            --alert-danger-color: #fca5a5;
+            --btn-secondary-bg: #334155;
+            --btn-secondary-color: #cbd5e1;
+            --btn-secondary-border: #475569;
+            --btn-secondary-hover-bg: #475569;
+            --account-card-bg: #172554;
+            --account-card-border: #1e40af;
+            --nav-tabs-border: #334155;
+            --modal-overlay: rgba(0,0,0,0.4);
+        }
+
+        /* ===== BASE STYLES ===== */
+        * { box-sizing: border-box; }
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            padding: 30px 15px;
+            background: linear-gradient(135deg, #0f0c29 0%, #1a1a2e 40%, #16213e 70%, #0f3460 100%);
+            padding: 30px 15px 50px;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            transition: background 0.3s ease;
         }
 
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #020617 0%, #0f172a 40%, #1e293b 100%);
+        }
+
+        /* ===== MAIN CARD ===== */
         .converter-form {
-            max-width: 600px;
+            max-width: 620px;
             margin: 0 auto;
-            padding: 35px;
+            padding: 38px 40px;
             background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 25px 50px -12px var(--shadow-color);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
             position: relative;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .category-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            display: none;
-            border: 1px solid #e9ecef;
+        /* ===== TOP BAR (DARK TOGGLE + LANGUAGE) ===== */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
         }
 
-        .cat-list {
-            max-height: 400px;
-            overflow-y: auto;
-            padding: 10px;
-            background: white;
+        .dark-mode-btn {
+            background: var(--section-bg);
+            border: 1px solid var(--border-color);
             border-radius: 10px;
-            border: 1px solid #dee2e6;
-        }
-
-        .cat-item {
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            background: white;
-            border: 1px solid #eef2f7;
-            border-radius: 8px;
-            cursor: move;
+            padding: 8px 14px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
             display: flex;
             align-items: center;
-            transition: all 0.2s;
+            gap: 7px;
+            transition: all 0.25s ease;
+            font-weight: 500;
         }
 
-        .cat-item:hover {
-            border-color: #667eea;
-            transform: translateX(5px);
-        }
-
-        .cat-item.sortable-ghost {
-            opacity: 0.4;
-            background: #e0e7ff;
-        }
-
-        .language-select {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            z-index: 10;
+        .dark-mode-btn:hover {
+            background: var(--item-hover-border);
+            color: #fff;
+            border-color: var(--item-hover-border);
         }
 
         .language-select select {
-            border: 2px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             padding: 8px 12px;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            background: white;
+            transition: all 0.25s ease;
+            background: var(--input-bg);
+            color: var(--text-primary);
         }
 
-        .language-select select:hover {
-            border-color: #667eea;
-        }
-
+        .language-select select:hover,
         .language-select select:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
             outline: none;
         }
 
+        /* ===== HEADINGS ===== */
         h2 {
             background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            font-weight: 700;
-            margin-bottom: 25px;
+            font-weight: 800;
+            font-size: 1.7rem;
+            margin-bottom: 22px;
+            letter-spacing: -0.5px;
         }
 
+        h5 {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        /* ===== ALERTS ===== */
         .alert-info {
-            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
-            color: #4338ca;
+            background: var(--alert-info-bg);
+            color: var(--alert-info-color);
             border: none;
             border-radius: 12px;
             font-weight: 500;
+            font-size: 14px;
         }
 
         .alert-danger {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            color: #dc2626;
+            background: var(--alert-danger-bg);
+            color: var(--alert-danger-color);
             border: none;
             border-radius: 12px;
         }
 
+        /* ===== FORM ELEMENTS ===== */
         .form-label {
             font-weight: 600;
-            color: #374151;
+            color: var(--text-primary);
             margin-bottom: 8px;
+            font-size: 14px;
         }
 
         .form-control,
         .form-select {
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--input-border);
             border-radius: 12px;
-            padding: 12px 16px;
+            padding: 11px 16px;
             font-size: 15px;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .form-control::placeholder {
+            color: var(--text-muted);
         }
 
         .form-control:focus,
         .form-select:focus {
             border-color: #667eea;
             box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .form-text {
+            color: var(--text-secondary);
+            font-size: 12px;
         }
 
         .form-check-input {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #d1d5db;
-            border-radius: 6px;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
             cursor: pointer;
+            background-color: var(--input-bg);
         }
 
         .form-check-input:checked {
-            background: var(--primary-gradient);
+            background-color: #667eea;
             border-color: #667eea;
         }
 
+        .form-check-label {
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        /* ===== PASSWORD TOGGLE ===== */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 16px;
+            transition: color 0.2s;
+            z-index: 5;
+        }
+
+        .password-toggle-btn:hover {
+            color: #667eea;
+        }
+
+        .password-wrapper .form-control {
+            padding-right: 44px;
+        }
+
+        /* ===== BUTTONS ===== */
         .btn-primary {
             background: var(--primary-gradient);
             border: none;
             border-radius: 12px;
-            padding: 14px 28px;
-            font-size: 16px;
+            padding: 13px 28px;
+            font-size: 15px;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.4px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
+            color: #ffffff;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+            color: #ffffff;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.75;
         }
 
         .btn-secondary {
-            background: white;
-            color: #4b5563;
-            border: 2px solid #e5e7eb;
+            background: var(--btn-secondary-bg);
+            color: var(--btn-secondary-color);
+            border: 2px solid var(--btn-secondary-border);
             font-weight: 600;
             border-radius: 12px;
             padding: 10px 20px;
+            transition: all 0.2s ease;
         }
 
         .btn-secondary:hover {
-            background: #f3f4f6;
-            border-color: #d1d5db;
-            color: #1f2937;
+            background: var(--btn-secondary-hover-bg);
+            border-color: var(--border-color);
+            color: var(--text-primary);
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            background: var(--success-gradient);
             border: none;
+            border-radius: 12px;
+            padding: 13px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+            transition: all 0.3s ease;
         }
 
+        .btn-success:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+            color: #ffffff;
+        }
+
+        .btn-outline-success {
+            border-color: #10b981;
+            color: #10b981;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 6px 12px;
+        }
+
+        .btn-outline-success:hover {
+            background-color: #10b981;
+            color: #fff;
+        }
+
+        .btn-outline-danger {
+            border-color: #ef4444;
+            color: #ef4444;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 6px 12px;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #ef4444;
+            color: #fff;
+        }
+
+        /* ===== SPINNER ===== */
         .spinner-border {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-width: 2px;
-            margin-right: 8px;
+            margin-right: 7px;
         }
 
-        .loading {
-            display: none;
-        }
+        .loading { display: none; }
 
+        /* ===== DIVIDER ===== */
         .divider {
             height: 1px;
-            background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
-            margin: 25px 0;
+            background: var(--divider-color);
+            margin: 24px 0;
         }
 
-        /* Custom Scrollbar */
-        .cat-list::-webkit-scrollbar {
-            width: 8px;
+        /* ===== SCREEN TRANSITION ===== */
+        .fade-slide {
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
-        .cat-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
+        .fade-slide.hidden {
+            opacity: 0;
+            transform: translateY(12px);
+            pointer-events: none;
         }
 
-        .cat-list::-webkit-scrollbar-thumb {
-            background: #c7c7c7;
-            border-radius: 4px;
+        /* ===== ACCOUNT INFO PANEL ===== */
+        #accountInfoPanel {
+            display: none;
+            background: var(--account-card-bg);
+            border: 1px solid var(--account-card-border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
         }
 
-        .cat-list::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
+        .account-info-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
         }
 
+        .account-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        @media (min-width: 480px) {
+            .account-info-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .account-info-item {
+            background: var(--item-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 12px;
+            text-align: center;
+        }
+
+        .account-info-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .account-info-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .status-active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-expired {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-trial {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        [data-theme="dark"] .status-active {
+            background: #064e3b;
+            color: #6ee7b7;
+        }
+
+        [data-theme="dark"] .status-expired {
+            background: #7f1d1d;
+            color: #fca5a5;
+        }
+
+        [data-theme="dark"] .status-trial {
+            background: #78350f;
+            color: #fde68a;
+        }
+
+        /* ===== CATEGORY SECTION ===== */
+        .category-section {
+            background: var(--section-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            border: 1px solid var(--border-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* ===== NAV TABS ===== */
+        .nav-tabs {
+            border-bottom: 2px solid var(--nav-tabs-border);
+            margin-bottom: 14px;
+            gap: 4px;
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--text-secondary);
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            transition: all 0.2s ease;
+            margin-bottom: -2px;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--tab-active-color);
+            background: transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--tab-active-color);
+            border-bottom: 2px solid var(--tab-active-color);
+            background: transparent;
+        }
+
+        .tab-badge {
+            display: inline-block;
+            background: var(--badge-bg);
+            color: var(--badge-color);
+            border-radius: 20px;
+            padding: 1px 7px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 5px;
+        }
+
+        /* ===== CAT LIST ===== */
+        .cat-list {
+            max-height: 360px;
+            overflow-y: auto;
+            padding: 8px;
+            background: var(--input-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cat-item {
+            padding: 9px 13px;
+            margin-bottom: 6px;
+            background: var(--item-bg);
+            border: 1px solid var(--item-border);
+            border-radius: 8px;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            transition: all 0.18s ease;
+            user-select: none;
+        }
+
+        .cat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .cat-item:hover {
+            border-color: var(--item-hover-border);
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+        }
+
+        .cat-item.sortable-ghost {
+            opacity: 0.4;
+            background: var(--badge-bg);
+        }
+
+        .cat-item .fa-grip-vertical {
+            color: var(--text-muted);
+            cursor: move;
+        }
+
+        .cat-item .form-check-label {
+            font-size: 14px;
+        }
+
+        /* ===== SEARCH INPUT ===== */
+        #catSearch {
+            border-radius: 10px;
+            border: 2px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+            padding: 9px 14px;
+        }
+
+        #catSearch::placeholder {
+            color: var(--text-muted);
+        }
+
+        #catSearch:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+            background: var(--input-bg);
+        }
+
+        /* ===== SCROLLBAR ===== */
+        .cat-list::-webkit-scrollbar { width: 7px; }
+        .cat-list::-webkit-scrollbar-track { background: var(--scrollbar-track); border-radius: 4px; }
+        .cat-list::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+        .cat-list::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ===== TOAST ===== */
+        .toast {
+            border-radius: 12px;
+            font-size: 14px;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 576px) {
             .converter-form {
-                padding: 25px 20px;
+                padding: 22px 18px;
             }
 
-            .language-select {
-                position: relative;
-                top: 0;
-                right: 0;
-                margin-bottom: 20px;
-                text-align: right;
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .account-info-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -252,227 +640,275 @@
 <body>
     <div class="container">
         <div class="converter-form">
-            <form method="post" class="language-select">
-                <select name="language" class="form-select form-select-sm" onchange="this.form.submit()"
-                    aria-label="<%= lang.select_language %>">
-                    <% Object.keys(languages).forEach(function(code) { %>
-                        <option value="<%= code %>" <%=currentLang===code ? 'selected' : '' %>><%= languages[code].flag
-                                %>
-                                <%= languages[code].name %>
-                        </option>
-                        <% }); %>
-                </select>
-            </form>
 
-            <h2 class="text-center mb-4">
-                <%= lang.title %>
-            </h2>
+            <!-- TOP BAR: Dark Mode Toggle + Language Selector -->
+            <div class="top-bar">
+                <button type="button" class="dark-mode-btn" id="darkModeToggle" title="<%= lang.dark_mode_toggle %>">
+                    <i class="fas fa-moon" id="darkModeIcon"></i>
+                    <span id="darkModeLabel"><%= lang.dark_mode_toggle %></span>
+                </button>
+                <form method="post" class="language-select" id="languageForm">
+                    <select name="language" class="form-select form-select-sm" onchange="this.form.submit()"
+                        aria-label="<%= lang.select_language %>">
+                        <% Object.keys(languages).forEach(function(code) { %>
+                            <option value="<%= code %>" <%= currentLang === code ? 'selected' : '' %>>
+                                <%= languages[code].flag %> <%= languages[code].name %>
+                            </option>
+                        <% }); %>
+                    </select>
+                </form>
+            </div>
+
+            <h2 class="text-center"><%= lang.title %></h2>
 
             <% if (error) { %>
                 <div class="alert alert-danger" role="alert">
-                    <%- error.replace(/\n/g, '<br>' ) %>
+                    <%- error.replace(/\n/g, '<br>') %>
                 </div>
-                <% } %>
+            <% } %>
 
-                    <div class="alert alert-info" role="alert">
-                        <%= lang.info %>
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle me-2"></i><%= lang.info %>
+            </div>
+
+            <form action="/" method="post" id="converterForm">
+
+                <!-- ===== CREDENTIALS SECTION ===== -->
+                <div id="credentialsSection" class="fade-slide">
+                    <div class="mb-3">
+                        <label for="url" class="form-label">
+                            <i class="fas fa-server me-1"></i><%= lang.url_label %>
+                        </label>
+                        <input type="text" class="form-control" name="url" id="url" required
+                            placeholder="<%= lang.url_placeholder %>"
+                            value="<%= locals.formData && formData.url || '' %>">
+                        <div class="form-text"><%= lang.url_help %></div>
                     </div>
 
-                    <form action="/" method="post" id="converterForm">
-                        <!-- Credentials Section -->
-                        <div id="credentialsSection">
-                            <div class="mb-3">
-                                <label for="url" class="form-label">
-                                    <%= lang.url_label %>
-                                </label>
-                                <input type="text" class="form-control" name="url" id="url" required
-                                    placeholder="<%= lang.url_placeholder %>"
-                                    value="<%= locals.formData && formData.url || '' %>">
-                                <div class="form-text">
-                                    <%= lang.url_help %>
-                                </div>
-                            </div>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user me-1"></i><%= lang.username_label %>
+                        </label>
+                        <input type="text" class="form-control" name="username" id="username" required
+                            value="<%= locals.formData && formData.username || '' %>">
+                    </div>
 
-                            <div class="mb-3">
-                                <label for="username" class="form-label">
-                                    <%= lang.username_label %>
-                                </label>
-                                <input type="text" class="form-control" name="username" id="username" required
-                                    value="<%= locals.formData && formData.username || '' %>">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="password" class="form-label">
-                                    <%= lang.password_label %>
-                                </label>
-                                <input type="password" class="form-control" name="password" id="password" required>
-                            </div>
-
-                            <div class="form-check mb-3">
-                                <input type="checkbox" class="form-check-input" id="rememberMe">
-                                <label class="form-check-label" for="rememberMe">
-                                    <%= lang.remember_credentials %>
-                                </label>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="content_type" class="form-label">
-                                    <%= lang.content_type_label %>
-                                </label>
-                                <select class="form-select" name="content_type" id="content_type">
-                                    <option value="all" <%=(locals.formData && formData.content_type=='all' )
-                                        ? 'selected' : '' %>><%= lang.content_all %>
-                                    </option>
-                                    <option value="live" <%=(locals.formData && formData.content_type=='live' )
-                                        ? 'selected' : '' %>><%= lang.content_live %>
-                                    </option>
-                                    <option value="vod" <%=(locals.formData && formData.content_type=='vod' )
-                                        ? 'selected' : '' %>><%= lang.content_movies %>
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="export_format" class="form-label">
-                                    <%= lang.export_format_label %>
-                                </label>
-                                <select class="form-select" name="export_format" id="export_format">
-                                    <option value="m3u" selected><%= lang.format_m3u %></option>
-                                    <option value="m3u8"><%= lang.format_m3u8 %></option>
-                                    <option value="json"><%= lang.format_json %></option>
-                                </select>
-                            </div>
-
-                            <div class="d-grid gap-2 mt-4">
-                                <button type="button" class="btn btn-primary" id="fetchCategoriesBtn">
-                                    <span class="spinner-border spinner-border-sm loading" role="status"
-                                        aria-hidden="true"></span>
-                                    <span id="fetchBtnText">
-                                        <%= lang.fetch_btn_initial %>
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Categories Section (Hidden Initially) -->
-                        <div id="categorySection" class="category-section">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="mb-0"><i class="fas fa-list-ul me-2"></i>
-                                    <%= lang.category_selection_title %>
-                                </h5>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-sm btn-outline-success" id="selectAllBtn">
-                                        <i class="fas fa-check-double me-1"></i>
-                                        <%= lang.select_all %>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" id="deselectAllBtn">
-                                        <i class="fas fa-times me-1"></i>
-                                        <%= lang.deselect_all %>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <input type="text" class="form-control form-control-sm" id="catSearch"
-                                placeholder="<%= lang.search_placeholder %>">
-                        </div>
-
-                        <ul class="nav nav-tabs mb-3" id="catTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="live-tab" data-bs-toggle="tab"
-                                    data-bs-target="#live-cats" type="button" role="tab">
-                                    <%= lang.tab_live %>
-                                </button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="vod-tab" data-bs-toggle="tab" data-bs-target="#vod-cats"
-                                    type="button" role="tab">
-                                    <%= lang.tab_vod %>
-                                </button>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content" id="catTabContent">
-                            <div class="tab-pane fade show active" id="live-cats" role="tabpanel">
-                                <div class="cat-list" id="liveCatList"></div>
-                            </div>
-                            <div class="tab-pane fade" id="vod-cats" role="tabpanel">
-                                <div class="cat-list" id="vodCatList"></div>
-                            </div>
-                        </div>
-
-                        <div class="divider"></div>
-
-                        <!-- Settings Section -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">
-                                    <%= lang.epg_support %>
-                                </label>
-                                <div class="form-check mb-2">
-                                    <input type="checkbox" class="form-check-input" name="epg_enabled" id="epg_enabled"
-                                        <%=(locals.formData && formData.epg_enabled) ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="epg_enabled">
-                                        <%= lang.epg_enabled %>
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" name="catchup_enabled"
-                                        id="catchup_enabled" <%=(locals.formData && formData.catchup_enabled)
-                                        ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="catchup_enabled">
-                                        <%= lang.catchup_enabled %>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-2">
-                                    <label for="days_to_include" class="form-label small mb-1">
-                                        <%= lang.days_to_include %>
-                                    </label>
-                                    <input type="number" class="form-control form-control-sm" name="days_to_include"
-                                        id="days_to_include"
-                                        value="<%= locals.formData && formData.days_to_include || 7 %>" min="1"
-                                        max="14">
-                                </div>
-                                <div>
-                                    <label for="epg_timeshift" class="form-label small mb-1">
-                                        <%= lang.epg_timeshift %>
-                                    </label>
-                                    <input type="number" class="form-control form-control-sm" name="epg_timeshift"
-                                        id="epg_timeshift" value="<%= locals.formData && formData.epg_timeshift || 0 %>"
-                                        min="-12" max="12">
-                                </div>
-                            </div>
-                        </div>
-
-                        <input type="hidden" name="selected_categories" id="selectedCategoriesInput">
-
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-success" id="finalSubmitBtn">
-                                <i class="fas fa-download me-2"></i>
-                                <%= lang.submit_download %>
-                            </button>
-                            <button type="button" class="btn btn-secondary" id="backBtn">
-                                <%= lang.back_btn %>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-1"></i><%= lang.password_label %>
+                        </label>
+                        <div class="password-wrapper">
+                            <input type="password" class="form-control" name="password" id="password" required>
+                            <button type="button" class="password-toggle-btn" id="passwordToggle"
+                                aria-label="Show/hide password">
+                                <i class="fas fa-eye" id="passwordToggleIcon"></i>
                             </button>
                         </div>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">
+                            <%= lang.remember_credentials %>
+                        </label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="content_type" class="form-label">
+                            <i class="fas fa-film me-1"></i><%= lang.content_type_label %>
+                        </label>
+                        <select class="form-select" name="content_type" id="content_type">
+                            <option value="all" <%= (locals.formData && formData.content_type === 'all') ? 'selected' : '' %>>
+                                <%= lang.content_all %>
+                            </option>
+                            <option value="live" <%= (locals.formData && formData.content_type === 'live') ? 'selected' : '' %>>
+                                <%= lang.content_live %>
+                            </option>
+                            <option value="vod" <%= (locals.formData && formData.content_type === 'vod') ? 'selected' : '' %>>
+                                <%= lang.content_movies %>
+                            </option>
+                            <option value="series" <%= (locals.formData && formData.content_type === 'series') ? 'selected' : '' %>>
+                                <%= lang.content_series %>
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="export_format" class="form-label">
+                            <i class="fas fa-file-export me-1"></i><%= lang.export_format_label %>
+                        </label>
+                        <select class="form-select" name="export_format" id="export_format">
+                            <option value="m3u" selected><%= lang.format_m3u %></option>
+                            <option value="m3u8"><%= lang.format_m3u8 %></option>
+                            <option value="json"><%= lang.format_json %></option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="button" class="btn btn-primary" id="fetchCategoriesBtn">
+                            <span class="spinner-border spinner-border-sm loading" role="status"
+                                aria-hidden="true"></span>
+                            <span id="fetchBtnText"><%= lang.fetch_btn_initial %></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ===== ACCOUNT INFO PANEL (shown after fetch) ===== -->
+                <div id="accountInfoPanel">
+                    <div class="account-info-title">
+                        <i class="fas fa-id-card"></i>
+                        <%= lang.account_info %>
+                    </div>
+                    <div class="account-info-grid">
+                        <div class="account-info-item">
+                            <div class="account-info-label"><%= lang.account_status %></div>
+                            <div class="account-info-value" id="acctStatus">—</div>
+                        </div>
+                        <div class="account-info-item">
+                            <div class="account-info-label"><%= lang.account_expiry %></div>
+                            <div class="account-info-value" id="acctExpiry">—</div>
+                        </div>
+                        <div class="account-info-item">
+                            <div class="account-info-label"><%= lang.account_connections %></div>
+                            <div class="account-info-value" id="acctMaxCons">—</div>
+                        </div>
+                        <div class="account-info-item">
+                            <div class="account-info-label"><%= lang.account_active %></div>
+                            <div class="account-info-value" id="acctActiveCons">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== CATEGORIES SECTION ===== -->
+                <div id="categorySection" class="category-section fade-slide hidden">
+
+                    <!-- Header row -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list-ul me-2"></i><%= lang.category_selection_title %>
+                        </h5>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-success" id="selectAllBtn">
+                                <i class="fas fa-check-double me-1"></i><%= lang.select_all %>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="deselectAllBtn">
+                                <i class="fas fa-times me-1"></i><%= lang.deselect_all %>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-control-sm" id="catSearch"
+                            placeholder="<%= lang.search_placeholder %>">
+                    </div>
+
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs" id="catTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="live-tab" data-bs-toggle="tab"
+                                data-bs-target="#live-cats" type="button" role="tab">
+                                <i class="fas fa-satellite-dish me-1"></i><%= lang.tab_live %>
+                                <span class="tab-badge" id="liveBadge">0</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="vod-tab" data-bs-toggle="tab" data-bs-target="#vod-cats"
+                                type="button" role="tab">
+                                <i class="fas fa-film me-1"></i><%= lang.tab_vod %>
+                                <span class="tab-badge" id="vodBadge">0</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="series-tab" data-bs-toggle="tab"
+                                data-bs-target="#series-cats" type="button" role="tab">
+                                <i class="fas fa-tv me-1"></i><%= lang.tab_series %>
+                                <span class="tab-badge" id="seriesBadge">0</span>
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab content -->
+                    <div class="tab-content" id="catTabContent">
+                        <div class="tab-pane fade show active" id="live-cats" role="tabpanel">
+                            <div class="cat-list" id="liveCatList"></div>
+                        </div>
+                        <div class="tab-pane fade" id="vod-cats" role="tabpanel">
+                            <div class="cat-list" id="vodCatList"></div>
+                        </div>
+                        <div class="tab-pane fade" id="series-cats" role="tabpanel">
+                            <div class="cat-list" id="seriesCatList"></div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Settings Section -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label"><%= lang.epg_support %></label>
+                            <div class="form-check mb-2">
+                                <input type="checkbox" class="form-check-input" name="epg_enabled" id="epg_enabled"
+                                    <%= (locals.formData && formData.epg_enabled) ? 'checked' : '' %>>
+                                <label class="form-check-label" for="epg_enabled">
+                                    <%= lang.epg_enabled %>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" name="catchup_enabled"
+                                    id="catchup_enabled"
+                                    <%= (locals.formData && formData.catchup_enabled) ? 'checked' : '' %>>
+                                <label class="form-check-label" for="catchup_enabled">
+                                    <%= lang.catchup_enabled %>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <label for="days_to_include" class="form-label small mb-1">
+                                    <%= lang.days_to_include %>
+                                </label>
+                                <input type="number" class="form-control form-control-sm" name="days_to_include"
+                                    id="days_to_include"
+                                    value="<%= locals.formData && formData.days_to_include || 7 %>"
+                                    min="1" max="14">
+                            </div>
+                            <div>
+                                <label for="epg_timeshift" class="form-label small mb-1">
+                                    <%= lang.epg_timeshift %>
+                                </label>
+                                <input type="number" class="form-control form-control-sm" name="epg_timeshift"
+                                    id="epg_timeshift"
+                                    value="<%= locals.formData && formData.epg_timeshift || 0 %>"
+                                    min="-12" max="12">
+                            </div>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="selected_categories" id="selectedCategoriesInput">
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success" id="finalSubmitBtn">
+                            <i class="fas fa-download me-2"></i><%= lang.submit_download %>
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="backBtn">
+                            <i class="fas fa-arrow-left me-2"></i><%= lang.back_btn %>
+                        </button>
+                    </div>
+                </div>
+
+            </form>
         </div>
-        </form>
-    </div>
     </div>
 
-    <!-- Toast for Notifications -->
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <!-- Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
         <div id="liveToast" class="toast align-items-center text-white bg-primary border-0" role="alert"
             aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
-                <div class="toast-body" id="toastMessage">
-                    İşlem başarılı!
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
-                    aria-label="Close"></button>
+                <div class="toast-body" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
         </div>
     </div>
@@ -481,30 +917,94 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
     <script>
-        const credentialsSection = document.getElementById('credentialsSection');
-        const categorySection = document.getElementById('categorySection');
-        const fetchBtn = document.getElementById('fetchCategoriesBtn');
-        const loading = fetchBtn.querySelector('.loading');
-        const backBtn = document.getElementById('backBtn');
-        const liveList = document.getElementById('liveCatList');
-        const vodList = document.getElementById('vodCatList');
-        const searchInput = document.getElementById('catSearch');
-        const selectAllBtn = document.getElementById('selectAllBtn');
-        const deselectAllBtn = document.getElementById('deselectAllBtn');
+        // ===== TRANSLATIONS =====
+        const t = {
+            fetchError:      "<%= lang.toast_error_fetch %>",
+            selectItems:     "<%= lang.toast_error_select %>",
+            success:         "<%= lang.toast_success %>",
+            downloadStart:   "<%= lang.toast_download_start %>",
+            fetchBtnInitial: "<%= lang.fetch_btn_initial %>",
+            fetchBtnLoading: "<%= lang.fetch_btn_loading %>",
+            noLiveCats:      "<%= lang.no_live_cats %>",
+            noVodCats:       "<%= lang.no_vod_cats %>",
+            noSeriesCats:    "<%= lang.no_series_cats %>",
+            preparing:       "<%= lang.preparing_btn %>",
+            neverExpire:     "<%= lang.account_never_expire %>",
+            trialLabel:      "<%= lang.account_trial %>"
+        };
 
-        // localStorage yönetimi
+        // ===== DOM REFS =====
+        const credentialsSection  = document.getElementById('credentialsSection');
+        const categorySection     = document.getElementById('categorySection');
+        const accountInfoPanel    = document.getElementById('accountInfoPanel');
+        const fetchBtn            = document.getElementById('fetchCategoriesBtn');
+        const fetchBtnSpinner     = fetchBtn.querySelector('.loading');
+        const fetchBtnText        = document.getElementById('fetchBtnText');
+        const backBtn             = document.getElementById('backBtn');
+        const liveList            = document.getElementById('liveCatList');
+        const vodList             = document.getElementById('vodCatList');
+        const seriesList          = document.getElementById('seriesCatList');
+        const searchInput         = document.getElementById('catSearch');
+        const selectAllBtn        = document.getElementById('selectAllBtn');
+        const deselectAllBtn      = document.getElementById('deselectAllBtn');
+
+        // ===== STATE =====
         const STORAGE_KEY = 'xtream_credentials';
+        let categoriesData = { live: [], vod: [], series: [] };
 
+        // ===== DARK MODE =====
+        const darkToggle     = document.getElementById('darkModeToggle');
+        const darkIcon       = document.getElementById('darkModeIcon');
+        const darkLabel      = document.getElementById('darkModeLabel');
+        const htmlEl         = document.documentElement;
+
+        function applyTheme(theme) {
+            htmlEl.setAttribute('data-theme', theme);
+            if (theme === 'dark') {
+                darkIcon.className = 'fas fa-sun';
+            } else {
+                darkIcon.className = 'fas fa-moon';
+            }
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('xtream_theme') || 'light';
+        applyTheme(savedTheme);
+
+        darkToggle.addEventListener('click', () => {
+            const current = htmlEl.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
+            localStorage.setItem('xtream_theme', next);
+        });
+
+        // ===== PASSWORD TOGGLE =====
+        const passwordInput      = document.getElementById('password');
+        const passwordToggleBtn  = document.getElementById('passwordToggle');
+        const passwordToggleIcon = document.getElementById('passwordToggleIcon');
+
+        passwordToggleBtn.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                passwordToggleIcon.className = 'fas fa-eye';
+            }
+        });
+
+        // ===== CREDENTIALS STORAGE =====
         function saveCredentials() {
             const rememberMe = document.getElementById('rememberMe').checked;
             if (rememberMe) {
-                const credentials = {
-                    url: document.getElementById('url').value,
-                    username: document.getElementById('username').value,
-                    content_type: document.getElementById('content_type').value,
-                    export_format: document.getElementById('export_format').value
+                const creds = {
+                    url:           document.getElementById('url').value,
+                    username:      document.getElementById('username').value,
+                    content_type:  document.getElementById('content_type').value,
+                    export_format: document.getElementById('export_format').value,
+                    rememberMe:    true
                 };
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(creds));
             } else {
                 localStorage.removeItem(STORAGE_KEY);
             }
@@ -512,103 +1012,181 @@
 
         function loadCredentials() {
             const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try {
-                    const credentials = JSON.parse(saved);
-                    document.getElementById('url').value = credentials.url || '';
-                    document.getElementById('username').value = credentials.username || '';
-                    document.getElementById('content_type').value = credentials.content_type || 'all';
-                    document.getElementById('export_format').value = credentials.export_format || 'm3u';
-                    document.getElementById('rememberMe').checked = true;
-                } catch (e) {
-                    console.error('Error loading credentials:', e);
-                }
+            if (!saved) return;
+            try {
+                const creds = JSON.parse(saved);
+                if (creds.url)           document.getElementById('url').value           = creds.url;
+                if (creds.username)      document.getElementById('username').value      = creds.username;
+                if (creds.content_type)  document.getElementById('content_type').value  = creds.content_type;
+                if (creds.export_format) document.getElementById('export_format').value = creds.export_format;
+                if (creds.rememberMe)    document.getElementById('rememberMe').checked  = true;
+            } catch (e) {
+                console.error('Error loading credentials:', e);
             }
         }
 
-        // Sayfa yüklendiğinde credential'ları yükle
-        window.addEventListener('DOMContentLoaded', function() {
-            loadCredentials();
+        // ===== SORTABLE INIT =====
+        new Sortable(liveList,   { animation: 150, ghostClass: 'sortable-ghost', handle: '.fa-grip-vertical' });
+        new Sortable(vodList,    { animation: 150, ghostClass: 'sortable-ghost', handle: '.fa-grip-vertical' });
+        new Sortable(seriesList, { animation: 150, ghostClass: 'sortable-ghost', handle: '.fa-grip-vertical' });
 
-            // Eğer kategori seçim ekranındaysa, kategorileri yükle
-            const savedScreen = sessionStorage.getItem('xtream_screen');
-            if (savedScreen === 'categories') {
-                const savedCategories = sessionStorage.getItem('xtream_categories');
-                if (savedCategories) {
-                    try {
-                        categoriesData = JSON.parse(savedCategories);
-                        renderCategories(categoriesData);
-                        credentialsSection.style.display = 'none';
-                        categorySection.style.display = 'block';
-                        sessionStorage.removeItem('xtream_screen');
-                        sessionStorage.removeItem('xtream_categories');
-                    } catch (e) {
-                        console.error('Error loading categories:', e);
-                    }
+        // ===== ACCOUNT INFO DISPLAY =====
+        function displayAccountInfo(info) {
+            if (!info) return;
+
+            const statusEl     = document.getElementById('acctStatus');
+            const expiryEl     = document.getElementById('acctExpiry');
+            const maxConsEl    = document.getElementById('acctMaxCons');
+            const activeConsEl = document.getElementById('acctActiveCons');
+
+            // Status badge
+            const isTrial   = String(info.is_trial) === '1';
+            const isExpired = info.status && info.status.toLowerCase() === 'expired';
+            let badgeClass  = 'status-active';
+            let statusText  = info.status || 'Active';
+            if (isExpired) {
+                badgeClass = 'status-expired';
+            } else if (isTrial) {
+                badgeClass = 'status-trial';
+                statusText = t.trialLabel;
+            }
+            statusEl.innerHTML = `<span class="status-badge ${badgeClass}">${statusText}</span>`;
+
+            // Expiry date
+            if (!info.exp_date || info.exp_date === null || info.exp_date === '0') {
+                expiryEl.textContent = t.neverExpire;
+            } else {
+                try {
+                    const ts = parseInt(info.exp_date, 10);
+                    const d  = new Date(ts * 1000);
+                    expiryEl.textContent = d.toLocaleDateString(undefined, {
+                        year: 'numeric', month: 'short', day: 'numeric'
+                    });
+                } catch (e) {
+                    expiryEl.textContent = info.exp_date;
                 }
             }
-        });
 
-        // Dil değiştirildiğinde bilgileri kaydet
-        const languageForm = document.querySelector('.language-select');
-        if (languageForm) {
-            languageForm.addEventListener('submit', function(e) {
-                // Dil değiştirilmeden önce bilgileri her zaman kaydet
-                const url = document.getElementById('url').value;
-                const username = document.getElementById('username').value;
-                const content_type = document.getElementById('content_type').value;
-                const export_format = document.getElementById('export_format').value;
+            maxConsEl.textContent    = info.max_connections || '1';
+            activeConsEl.textContent = info.active_cons || '0';
 
-                if (url || username) {
-                    const credentials = {
-                        url: url,
-                        username: username,
-                        content_type: content_type,
-                        export_format: export_format
-                    };
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials));
+            accountInfoPanel.style.display = 'block';
+        }
 
-                    // Checkbox durumunu da kaydet
-                    const rememberMe = document.getElementById('rememberMe');
-                    if (rememberMe) {
-                        credentials.rememberMe = rememberMe.checked;
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(credentials));
-                    }
-                }
+        function hideAccountInfo() {
+            accountInfoPanel.style.display = 'none';
+        }
 
-                // Eğer kategori seçim ekranındaysa, kategorileri de kaydet
-                if (categorySection.style.display === 'block') {
-                    sessionStorage.setItem('xtream_categories', JSON.stringify(categoriesData));
-                    sessionStorage.setItem('xtream_screen', 'categories');
-                }
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            document.querySelectorAll('.cat-item').forEach(item => {
+                const name = item.dataset.name || '';
+                item.style.display = (!searchTerm || name.includes(searchTerm)) ? 'flex' : 'none';
             });
         }
 
-        // Dil çevirileri (JS tarafı için)
-        const translations = {
-            fetchError: "<%= lang.toast_error_fetch %>",
-            selectItems: "<%= lang.toast_error_select %>",
-            success: "<%= lang.toast_success %>",
-            downloadStart: "<%= lang.toast_download_start %>",
-            fetchBtnInitial: "<%= lang.fetch_btn_initial %>",
-            fetchBtnLoading: "<%= lang.fetch_btn_loading %>",
-            noLiveCats: "<%= lang.no_live_cats %>",
-            noVodCats: "<%= lang.no_vod_cats %>",
-            preparing: "<%= lang.preparing_btn %>"
-        };
+        // ===== SEARCH =====
+        searchInput.addEventListener('input', applyFilters);
 
-        // Kategori verilerini saklamak için
-        let categoriesData = { live: [], vod: [] };
+        // ===== RENDER CATEGORIES =====
+        function createCatItem(cat, type) {
+            return `
+                <div class="cat-item" data-id="${cat.id}" data-type="${type}" data-name="${cat.name.toLowerCase()}">
+                    <i class="fas fa-grip-vertical me-3"></i>
+                    <div class="form-check flex-grow-1 mb-0">
+                        <input class="form-check-input" type="checkbox" checked id="${type}_${cat.id}">
+                        <label class="form-check-label w-100" for="${type}_${cat.id}">
+                            ${cat.name}
+                        </label>
+                    </div>
+                </div>
+            `;
+        }
 
-        // SortableJS Init
-        new Sortable(liveList, { animation: 150, ghostClass: 'sortable-ghost', handle: '.fa-grip-vertical' });
-        new Sortable(vodList, { animation: 150, ghostClass: 'sortable-ghost', handle: '.fa-grip-vertical' });
+        function renderCategories(data) {
+            liveList.innerHTML   = '';
+            vodList.innerHTML    = '';
+            seriesList.innerHTML = '';
 
-        // Kategorileri Getir Butonu
+            if (data.live && data.live.length) {
+                data.live.forEach(cat => liveList.insertAdjacentHTML('beforeend', createCatItem(cat, 'live')));
+            } else {
+                liveList.innerHTML = `<p class="text-center p-3" style="color: var(--text-muted)">${t.noLiveCats}</p>`;
+            }
+
+            if (data.vod && data.vod.length) {
+                data.vod.forEach(cat => vodList.insertAdjacentHTML('beforeend', createCatItem(cat, 'vod')));
+            } else {
+                vodList.innerHTML = `<p class="text-center p-3" style="color: var(--text-muted)">${t.noVodCats}</p>`;
+            }
+
+            if (data.series && data.series.length) {
+                data.series.forEach(cat => seriesList.insertAdjacentHTML('beforeend', createCatItem(cat, 'series')));
+            } else {
+                seriesList.innerHTML = `<p class="text-center p-3" style="color: var(--text-muted)">${t.noSeriesCats}</p>`;
+            }
+
+            // Update badges
+            document.getElementById('liveBadge').textContent   = data.live   ? data.live.length   : 0;
+            document.getElementById('vodBadge').textContent    = data.vod    ? data.vod.length    : 0;
+            document.getElementById('seriesBadge').textContent = data.series ? data.series.length : 0;
+
+            // Show/hide tabs based on content_type AND actual data received
+            const contentType   = document.getElementById('content_type').value;
+            const hasLive       = data.live   && data.live.length   > 0;
+            const hasVod        = data.vod    && data.vod.length    > 0;
+            const hasSeries     = data.series && data.series.length > 0;
+
+            const liveTabItem   = document.getElementById('live-tab').parentElement;
+            const vodTabItem    = document.getElementById('vod-tab').parentElement;
+            const seriesTabItem = document.getElementById('series-tab').parentElement;
+
+            // Show tab if: content_type includes it OR actual data exists for it
+            liveTabItem.style.display   = (contentType === 'all' || contentType === 'live'   || hasLive)   ? '' : 'none';
+            vodTabItem.style.display    = (contentType === 'all' || contentType === 'vod'    || hasVod)    ? '' : 'none';
+            seriesTabItem.style.display = (contentType === 'all' || contentType === 'series' || hasSeries) ? '' : 'none';
+
+            // Activate the appropriate first visible tab
+            if (contentType === 'vod' && !hasLive) {
+                document.getElementById('vod-tab').click();
+            } else if (contentType === 'series' && !hasLive && !hasVod) {
+                document.getElementById('series-tab').click();
+            } else {
+                document.getElementById('live-tab').click();
+            }
+
+            // Re-apply any active filter
+            applyFilters();
+        }
+
+        // ===== SCREEN TRANSITIONS =====
+        function showCategoryScreen() {
+            credentialsSection.classList.add('hidden');
+            setTimeout(() => {
+                credentialsSection.style.display = 'none';
+                categorySection.style.display = 'block';
+                // Force reflow
+                categorySection.offsetHeight;
+                categorySection.classList.remove('hidden');
+            }, 280);
+        }
+
+        function showCredentialsScreen() {
+            categorySection.classList.add('hidden');
+            hideAccountInfo();
+            setTimeout(() => {
+                categorySection.style.display = 'none';
+                credentialsSection.style.display = 'block';
+                credentialsSection.offsetHeight;
+                credentialsSection.classList.remove('hidden');
+            }, 280);
+        }
+
+        // ===== FETCH CATEGORIES =====
         fetchBtn.addEventListener('click', async () => {
-            const url = document.getElementById('url').value;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+            const url         = document.getElementById('url').value.trim();
+            const username    = document.getElementById('username').value.trim();
+            const password    = document.getElementById('password').value;
             const contentType = document.getElementById('content_type').value;
 
             if (!url || !username || !password) {
@@ -616,12 +1194,11 @@
                 return;
             }
 
-            // Credential'ları kaydet
             saveCredentials();
 
-            loading.style.display = 'inline-block';
+            fetchBtnSpinner.style.display = 'inline-block';
             fetchBtn.disabled = true;
-            document.getElementById('fetchBtnText').textContent = translations.fetchBtnLoading;
+            fetchBtnText.textContent = t.fetchBtnLoading;
 
             try {
                 const response = await fetch('/api/categories', {
@@ -633,174 +1210,181 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    categoriesData = data.categories;
+                    categoriesData = data.categories || { live: [], vod: [], series: [] };
                     renderCategories(categoriesData);
-                    credentialsSection.style.display = 'none';
-                    categorySection.style.display = 'block';
-                    showToast(translations.success);
+                    if (data.accountInfo) {
+                        displayAccountInfo(data.accountInfo);
+                    }
+                    showCategoryScreen();
+                    showToast(t.success, 'bg-success');
                 } else {
-                    showToast(data.error || translations.fetchError, "bg-danger");
+                    showToast(data.error || t.fetchError, 'bg-danger');
                 }
-            } catch (error) {
-                console.error(error);
-                showToast(translations.fetchError, "bg-danger");
+            } catch (err) {
+                console.error(err);
+                showToast(t.fetchError, 'bg-danger');
             } finally {
-                loading.style.display = 'none';
+                fetchBtnSpinner.style.display = 'none';
                 fetchBtn.disabled = false;
-                document.getElementById('fetchBtnText').textContent = translations.fetchBtnInitial;
+                fetchBtnText.textContent = t.fetchBtnInitial;
             }
         });
 
-        // Geri Dön Butonu
+        // ===== BACK BUTTON =====
         backBtn.addEventListener('click', () => {
-            categorySection.style.display = 'none';
-            credentialsSection.style.display = 'block';
+            showCredentialsScreen();
         });
 
-        // Kategorileri Listele
-        function renderCategories(data) {
-            liveList.innerHTML = '';
-            vodList.innerHTML = '';
-
-            const createItem = (cat, type) => `
-                <div class="cat-item" data-id="${cat.id}" data-type="${type}" data-name="${cat.name.toLowerCase()}">
-                    <i class="fas fa-grip-vertical text-secondary me-3" style="cursor: move;"></i>
-                    <div class="form-check flex-grow-1 mb-0">
-                        <input class="form-check-input" type="checkbox" checked id="${type}_${cat.id}">
-                        <label class="form-check-label w-100" for="${type}_${cat.id}">
-                            ${cat.name}
-                        </label>
-                    </div>
-                </div>
-            `;
-
-            if (data.live && data.live.length) {
-                data.live.forEach(cat => liveList.insertAdjacentHTML('beforeend', createItem(cat, 'live')));
-            } else {
-                liveList.innerHTML = `<p class="text-muted text-center p-3">${translations.noLiveCats}</p>`;
-            }
-
-            if (data.vod && data.vod.length) {
-                data.vod.forEach(cat => vodList.insertAdjacentHTML('beforeend', createItem(cat, 'vod')));
-            } else {
-                vodList.innerHTML = `<p class="text-muted text-center p-3">${translations.noVodCats}</p>`;
-            }
-
-            // Eğer içerik tipine göre tabları gizle/göster yapmalıyız
-            const contentType = document.getElementById('content_type').value;
-            const liveTab = document.getElementById('live-tab');
-            const vodTab = document.getElementById('vod-tab');
-
-            if (contentType === 'live') {
-                liveTab.click();
-                vodTab.parentElement.style.display = 'none';
-                liveTab.parentElement.style.display = 'block';
-            } else if (contentType === 'vod') {
-                vodTab.click();
-                liveTab.parentElement.style.display = 'none';
-                vodTab.parentElement.style.display = 'block';
-            } else {
-                liveTab.parentElement.style.display = 'block';
-                vodTab.parentElement.style.display = 'block';
-                liveTab.click();
-            }
-        }
-
-        // Arama Fonksiyonu
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.cat-item').forEach(item => {
-                const name = item.dataset.name;
-                item.style.display = name.includes(term) ? 'flex' : 'none';
-            });
-        });
-
-        // Tümünü Seç
+        // ===== SELECT / DESELECT ALL =====
         selectAllBtn.addEventListener('click', () => {
-            const activeTabId = document.querySelector('.nav-link.active').getAttribute('data-bs-target');
-            const container = document.querySelector(activeTabId);
-            container.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+            const activeTabTarget = document.querySelector('#catTabs .nav-link.active').getAttribute('data-bs-target');
+            const container = document.querySelector(activeTabTarget);
+            if (container) {
+                container.querySelectorAll('.cat-item').forEach(item => {
+                    if (item.style.display !== 'none') {
+                        const cb = item.querySelector('input[type="checkbox"]');
+                        if (cb) cb.checked = true;
+                    }
+                });
+            }
         });
 
-        // Tümünü Kaldır
         deselectAllBtn.addEventListener('click', () => {
-            const activeTabId = document.querySelector('.nav-link.active').getAttribute('data-bs-target');
-            const container = document.querySelector(activeTabId);
-            container.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            const activeTabTarget = document.querySelector('#catTabs .nav-link.active').getAttribute('data-bs-target');
+            const container = document.querySelector(activeTabTarget);
+            if (container) {
+                container.querySelectorAll('.cat-item').forEach(item => {
+                    if (item.style.display !== 'none') {
+                        const cb = item.querySelector('input[type="checkbox"]');
+                        if (cb) cb.checked = false;
+                    }
+                });
+            }
         });
 
-        // Form Submit
+        // ===== FORM SUBMIT =====
         document.getElementById('converterForm').addEventListener('submit', function (e) {
-            // Eğer hidden input zaten doluysa ve submit ediliyorsa karışma (klasik submit)
-            // Ama biz 2. aşamadayız, verileri toplayıp json yapıp hidden inputa koymalıyız.
-
-            if (categorySection.style.display === 'none') {
-                // Eğer kategori bölümü kapalıysa ve submit tetiklendiyse (ki olmamalı, type=button fetch var)
-                // Yinede normal submit yapılabilir ama kategori seçimi yok demektir.
-                return;
+            if (categorySection.style.display === 'none' || categorySection.style.display === '') {
+                return; // Let normal submit through if category section not visible
             }
 
-            e.preventDefault(); // Önce durdur
+            e.preventDefault();
 
             const selectedCategories = [];
 
-            // Live Kategorileri Topla (DOM sıralamasına göre)
             document.querySelectorAll('#live-cats .cat-item').forEach(item => {
                 const cb = item.querySelector('input[type="checkbox"]');
-                if (cb.checked) {
+                if (cb && cb.checked) {
                     selectedCategories.push({
-                        id: item.dataset.id,
+                        id:   item.dataset.id,
                         type: 'live',
-                        name: cb.nextElementSibling.textContent.trim()
+                        name: item.querySelector('.form-check-label').textContent.trim()
                     });
                 }
             });
 
-            // VOD Kategorileri Topla (DOM sıralamasına göre)
             document.querySelectorAll('#vod-cats .cat-item').forEach(item => {
                 const cb = item.querySelector('input[type="checkbox"]');
-                if (cb.checked) {
+                if (cb && cb.checked) {
                     selectedCategories.push({
-                        id: item.dataset.id,
+                        id:   item.dataset.id,
                         type: 'vod',
-                        name: cb.nextElementSibling.textContent.trim()
+                        name: item.querySelector('.form-check-label').textContent.trim()
+                    });
+                }
+            });
+
+            // Series categories are collected but not used in M3U (series require episode-level fetching)
+            // They are included here for potential future use
+            document.querySelectorAll('#series-cats .cat-item').forEach(item => {
+                const cb = item.querySelector('input[type="checkbox"]');
+                if (cb && cb.checked) {
+                    selectedCategories.push({
+                        id:   item.dataset.id,
+                        type: 'series',
+                        name: item.querySelector('.form-check-label').textContent.trim()
                     });
                 }
             });
 
             if (selectedCategories.length === 0) {
-                showToast(translations.selectItems, "bg-warning");
+                showToast(t.selectItems, 'bg-warning');
                 return;
             }
 
             document.getElementById('selectedCategoriesInput').value = JSON.stringify(selectedCategories);
 
-            // Buton loading durumu
-            const finalBtn = document.getElementById('finalSubmitBtn');
-            const originText = finalBtn.innerHTML;
+            const finalBtn   = document.getElementById('finalSubmitBtn');
+            const originHTML = finalBtn.innerHTML;
             finalBtn.disabled = true;
-            finalBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${translations.preparing}`;
+            finalBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${t.preparing}`;
 
-            // Formu manuel submit et
             e.target.submit();
 
             setTimeout(() => {
                 finalBtn.disabled = false;
-                finalBtn.innerHTML = originText;
-                showToast(translations.downloadStart, "bg-success");
+                finalBtn.innerHTML = originHTML;
+                showToast(t.downloadStart, 'bg-success');
             }, 3000);
         });
 
-        function showToast(message, bgClass = "bg-primary") {
-            const toastEl = document.getElementById('liveToast');
+        // ===== TOAST =====
+        function showToast(message, bgClass = 'bg-primary') {
+            const toastEl   = document.getElementById('liveToast');
             const toastBody = document.getElementById('toastMessage');
-
             toastEl.className = `toast align-items-center text-white border-0 ${bgClass}`;
             toastBody.textContent = message;
-
-            const toast = new bootstrap.Toast(toastEl);
+            const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
             toast.show();
         }
+
+        // ===== LANGUAGE FORM: PRESERVE CREDENTIALS =====
+        const languageForm = document.getElementById('languageForm');
+        if (languageForm) {
+            languageForm.addEventListener('submit', function () {
+                const url     = document.getElementById('url').value;
+                const username = document.getElementById('username').value;
+                if (url || username) {
+                    const creds = {
+                        url,
+                        username,
+                        content_type:  document.getElementById('content_type').value,
+                        export_format: document.getElementById('export_format').value,
+                        rememberMe:    document.getElementById('rememberMe').checked
+                    };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(creds));
+                }
+                if (categorySection.style.display === 'block') {
+                    sessionStorage.setItem('xtream_categories', JSON.stringify(categoriesData));
+                    sessionStorage.setItem('xtream_screen', 'categories');
+                }
+            });
+        }
+
+        // ===== ON DOM READY =====
+        window.addEventListener('DOMContentLoaded', function () {
+            loadCredentials();
+
+            // Restore category screen if navigated back
+            const savedScreen = sessionStorage.getItem('xtream_screen');
+            if (savedScreen === 'categories') {
+                const savedCats = sessionStorage.getItem('xtream_categories');
+                if (savedCats) {
+                    try {
+                        categoriesData = JSON.parse(savedCats);
+                        renderCategories(categoriesData);
+                        credentialsSection.style.display = 'none';
+                        categorySection.style.display = 'block';
+                        categorySection.classList.remove('hidden');
+                    } catch (err) {
+                        console.error('Error restoring categories:', err);
+                    } finally {
+                        sessionStorage.removeItem('xtream_screen');
+                        sessionStorage.removeItem('xtream_categories');
+                    }
+                }
+            }
+        });
     </script>
 </body>
 

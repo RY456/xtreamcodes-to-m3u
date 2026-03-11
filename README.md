@@ -18,11 +18,12 @@ A powerful, user-friendly Node.js application that converts Xtream Codes API cre
     *   **Fetch & Select**: Retrieve categories from the server and select only what you want.
     *   **Drag & Drop Sorting**: Reorder categories simply by dragging them. The M3U will follow your custom order.
     *   **Bulk Actions**: "Select All" and "Deselect All" buttons for quick management.
-    *   **Quality Filtering**: Filter categories by quality (HD, FHD, 4K/UHD) with visual badges.
-*   **Content Filtering**: Choose to include Live TV, Movies (VOD), or both.
+    *   **Search**: Instantly filter categories by name using the search bar.
+*   **Content Filtering**: Choose to include Live TV, Movies (VOD), Series, or all three.
 *   **EPG & Catch-up**: Optional support for Electronic Program Guide (EPG) and Catch-up (TV Archive).
 *   **Credential Management**: Save your credentials locally for quick access (browser localStorage).
-*   **Modern UI**: Responsive, dark-themed interface built with Bootstrap 5 and custom CSS.
+*   **Account Info**: Displays account status (Active/Trial/Expired), expiry date, and connection limits after fetching.
+*   **Modern UI**: Responsive, dark/light theme interface built with Bootstrap 5 and custom CSS.
 *   **Multi-Language**: Supports English (EN), Turkish (TR), German (DE), and French (FR).
 *   **Docker Support**: Easy deployment with Docker and docker-compose.
 *   **Privacy Focused**: No data is stored on the server. Credentials are passed directly to the IPTV provider.
@@ -63,13 +64,14 @@ A powerful, user-friendly Node.js application that converts Xtream Codes API cre
 
 2.  **Fetch Categories**:
     *   Click the **"Fetch Categories & Edit"** button.
-    *   The app will verify your credentials and load available Live TV and VOD categories.
+    *   The app will verify your credentials and load available Live TV, VOD, and Series categories.
+    *   Your account info (status, expiry, connections) will be displayed at the top.
 
 3.  **Customize**:
     *   **Select**: Check the boxes for the categories you want to keep.
     *   **Sort**: Drag and drop category items to change their order in the playlist.
-    *   **Filter**: Use the "Select All" / "Deselect All" buttons or the search bar.
-    *   **Quality Filter**: Filter categories by quality (All, HD, FHD, 4K/UHD).
+    *   **Search**: Use the search bar to quickly find categories by name.
+    *   **Bulk**: Use "Select All" / "Deselect All" buttons for quick management.
     *   **Settings**: Enable EPG, Catch-up, or adjust the number of days to include.
     *   **Export Format**: Choose between M3U, M3U8, or JSON format.
     *   **Remember Credentials**: Check "Remember credentials" to save your settings for next time.
