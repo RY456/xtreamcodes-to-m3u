@@ -1,5 +1,24 @@
 # Xtream Codes to M3U Converter
 
+> ## 🚀 This project has a successor: [M3uEditor](https://github.com/fyildirim-debug/M3uEditor)
+>
+> All future development continues at **[fyildirim-debug/M3uEditor](https://github.com/fyildirim-debug/M3uEditor)** — a much more powerful, **100% free** open-source IPTV manager with:
+>
+> - Full **web-based editor UI** (Vue 3 + Express + PostgreSQL)
+> - **Xtream Codes** + **M3U import / export** in one place
+> - **EPG / XMLTV** TV guide with auto-matching
+> - **Drag-and-drop** category & channel sorting
+> - **Multi-user** authentication, account management, share links
+> - **Light / Dark / System** themes
+> - **Live TV + Movies (VOD) + Series** dedicated editors
+> - Bulk editing, fuzzy search, channel logos, metadata
+> - **Self-hosted, no plan limits, no ads** — MIT licensed
+> - Docker support + one-shot demo seed
+>
+> 👉 **[Switch to M3uEditor](https://github.com/fyildirim-debug/M3uEditor)** for the full experience. This original tool remains available for simple one-shot M3U conversion.
+
+---
+
 A powerful, user-friendly Node.js application that converts Xtream Codes API credentials into an M3U playlist file. It features a modern web interface, multi-language support, and advanced category management.
 
 <p align="center">
@@ -28,7 +47,7 @@ A powerful, user-friendly Node.js application that converts Xtream Codes API cre
 *   **Docker Support**: Easy deployment with Docker and docker-compose.
 *   **Privacy Focused**: No data is stored on the server. Credentials are passed directly to the IPTV provider.
 
-## �️ Installation
+## 🛠️ Installation
 
 ### Prerequisites
 
